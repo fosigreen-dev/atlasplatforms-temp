@@ -544,8 +544,11 @@
             // Use the Fetch API to send data to your Google Apps Script
             fetch(WEB_APP_URL, {
                 method: 'POST',
+                // Add redirect: 'follow' as a best practice for Apps Script
+                redirect: 'follow', 
                 body: JSON.stringify(formData),
-                headers: { 'Content-Type': 'application/json' },
+                // Change the Content-Type to avoid the CORS preflight request
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
             })
             .then(response => response.json())
             .then(data => {
