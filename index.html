@@ -553,13 +553,14 @@
             .then(response => response.json())
             .then(data => {
                 // 'data' is the response object from your Google Script
-                if (data.status === 'success') {
-                    // SUCCESS: Redirect to the dashboard
-                    window.location.href = 'demo_dashboard.html';
+                if (data.status === 'success' && data.token) {
+                    // SUCCESS: We received a token. Redirect to the web app URL with the token.
+                    // This will trigger the doGet function in our script.
+                    window.location.href = WEB_APP_URL + '?token=' + data.token;
                 } else {
                     // FAILURE: Show the error message from the script
                     feedbackMessage.innerHTML = data.message || 'An unknown error occurred.';
-                    feedbackMessage.style.color = '#EA4335';
+                    feedbackMessage.style.color = '#EA4335'; // Red color for errors
                     feedbackMessage.style.display = 'block';
                 }
             })
