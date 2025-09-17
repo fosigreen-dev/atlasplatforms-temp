@@ -505,26 +505,23 @@
 
         // --- NEW: MODIFIED FORM HANDLING WITH DEMO LOGIN ---
         
-        // A reusable function to show a message to beta users on social login clicks
-        function showBetaAccessMessage(container) {
+         function showBetaAccessMessage(container) {
             const feedbackMessage = container.querySelector('.form-feedback-message');
             if (!feedbackMessage) return;
-
             feedbackMessage.innerHTML = 'Social sign-in is not available for this demo.';
             feedbackMessage.style.color = 'var(--brand-gold)';
             feedbackMessage.style.display = 'block';
         }
 
-        // Handle the main email/password form submission
         function handleLogin(event) {
-            event.preventDefault(); // Stop the form from submitting the old way
+            event.preventDefault(); // Prevent default form submission
 
             // --- PASTE YOUR GOOGLE APPS SCRIPT WEB APP URL HERE ---
             const WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwAHx-cuZy4uhxhp1agk1CJptc9SwMhhUSRzyBOJUCthc-XI6fjBt1fxzmOB6Uq9tfCkg/exec';
             // --------------------------------------------------------
 
-            if (WEB_APP_URL === 'PASTE_THE_WEB_APP_URL_YOU_COPIED_IN_STEP_3_HERE') {
-                alert('Please update the WEB_APP_URL in the script tag of index.html');
+            if (WEB_APP_URL.includes('PASTE_THE_WEB_APP_URL')) {
+                alert('Configuration error: Please update the WEB_APP_URL in index.html.');
                 return;
             }
 
@@ -537,6 +534,7 @@
                 password: form.querySelector('#password').value
             };
 
+            // Disable button and clear previous messages
             submitButton.disabled = true;
             submitButton.innerHTML = 'Verifying...';
             feedbackMessage.style.display = 'none';
@@ -544,11 +542,9 @@
             // Use the Fetch API to send data to your Google Apps Script
             fetch(WEB_APP_URL, {
                 method: 'POST',
-                // Add redirect: 'follow' as a best practice for Apps Script
                 redirect: 'follow', 
                 body: JSON.stringify(formData),
-                // Change the Content-Type to avoid the CORS preflight request
-                headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' }, // Use text/plain to avoid CORS preflight
             })
             .then(response => response.json())
             .then(data => {
@@ -565,9 +561,9 @@
                 }
             })
             .catch(error => {
-                // Handle network errors etc.
-                console.error('Error:', error);
-                feedbackMessage.innerHTML = 'Could not connect to the login service.';
+                // Handle network errors, etc.
+                console.error('Error during login fetch:', error);
+                feedbackMessage.innerHTML = 'Could not connect to the login service. Please try again later.';
                 feedbackMessage.style.color = '#EA4335';
                 feedbackMessage.style.display = 'block';
             })
@@ -588,7 +584,6 @@
                 }
             });
         });
-
 
         // --- GO! ---
         setup();
